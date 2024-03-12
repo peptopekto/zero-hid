@@ -36,6 +36,22 @@ class Mouse:
         if release:
             self.release()
 
+    def right_press(self):
+        self.buttons_state |= 0x2  # set right button bit
+        self.__send_mouse_event(self.dev, self.buttons_state, 0, 0, 0, 0)
+
+    def right_release(self):
+        self.buttons_state &= ~0x2  # clear right button bit
+        self.__send_mouse_event(self.dev, self.buttons_state, 0, 0, 0, 0)
+
+    def middle_press(self):
+        self.buttons_state |= 0x4  # set middle button bit
+        self.__send_mouse_event(self.dev, self.buttons_state, 0, 0, 0, 0)
+
+    def middle_release(self):
+        self.buttons_state &= ~0x4  # clear middle button bit
+        self.__send_mouse_event(self.dev, self.buttons_state, 0, 0, 0, 0)
+
     def release(self):
         """
         Release Mouse Buttons
