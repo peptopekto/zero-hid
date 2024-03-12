@@ -10,6 +10,8 @@ lastRight = 0
 def getMouseEvent():
   
   # read mouse state
+  global lastLeft
+  global lastRight
   buf = file.read(3)
   button = buf[0]
   bLeft = button & 0x1
