@@ -63,13 +63,13 @@ class Mouse:
         time.sleep(delay)
         self.middle_release()
 
-    def pressAnyButton(self, button: int):
+    def pressSpecificButton(self, button: int):
         if not 1 <= button <= 7:
             raise ValueError("Button should be in range of 1 to 7")
         self.buttons_state |= button
         self.__send_mouse_event(self.dev, self.buttons_state, 0, 0, 0, 0)
 
-    def releaseAnyButton(self, button: int):
+    def releaseSpecificButton(self, button: int):
         if not 1 <= button <= 7:
             raise ValueError("Button should be in range of 1 to 7")
         self.buttons_state &= ~button
