@@ -1,3 +1,4 @@
+import time
 from . import defaults
 from .hid.mouse import relative_mouse_event, absolute_mouse_event
 from typing import SupportsInt
@@ -12,7 +13,6 @@ class Mouse:
         self.__send_mouse_event = absolute_mouse_event if absolute else relative_mouse_event # dynamic mouse event method
         self.buttons_state = 0x0
         
-
     def __setup_device(self, dev, absolute: bool):
         if dev is None:
             dev = defaults.ABSOLUTE_MOUSE_PATH if absolute else defaults.RELATIVE_MOUSE_PATH
@@ -23,18 +23,6 @@ class Mouse:
     
     def __setup_move(self, absolute: bool):
         self.move = self.__move_absolute if absolute else self.__move_relative # dynamic move method
-
-    def left_click(self, release = True):
-        self.__send_mouse_event(self.dev, 0x1, 0, 0, 0, 0)
-        self.buttons_state = 0x1
-        if release:
-            self.release()
-    
-    def right_click(self, release = True):
-        self.__send_mouse_event(self.dev, 0x2, 0, 0, 0, 0)
-        self.buttons_state = 0x2
-        if release:
-            self.release()
 
     def left_press(self):
         self.buttons_state |= 0x1  # set left button bit
@@ -60,12 +48,37 @@ class Mouse:
         self.buttons_state &= ~0x4  # clear middle button bit
         self.__send_mouse_event(self.dev, self.buttons_state, 0, 0, 0, 0)
 
-    def release(self):
-        """
-        Release Mouse Buttons
-        """
-        self.__send_mouse_event(self.dev, 0x0, 0, 0, 0, 0)
-        self.buttons_state = 0x0
+    def clickLeftButton(self, delay: int = 0.025):
+        self.left_press()
+        time.sleep(delay)
+        self.left_release() 
+    
+    def clickRightButton(self, delay: int = 0.025):
+        self.right_press()
+        time.sleep(delay)
+        self.right_release()
+    
+    def clickMiddleButton(self, delay: int = 0.025):
+        self.middle_press()
+        time.sleep(delay)
+        self.middle_release()
+
+    def pressAnyButton(self, button: int):
+        if not 1 <= button <= 7:
+            raise ValueError("Button should be in range of 1 to 7")
+        self.buttons_state |= button
+        self.__send_mouse_event(self.dev, self.buttons_state, 0, 0, 0, 0)
+
+    def releaseAnyButton(self, button: int):
+        if not 1 <= button <= 7:
+            raise ValueError("Button should be in range of 1 to 7")
+        self.buttons_state &= ~button
+        self.__send_mouse_event(self.dev, self.buttons_state, 0, 0, 0, 0)
+
+    def clickAnyButton(self, button: int, delay: int = 0.025):
+        self.pressAnyButton(button)
+        time.sleep(delay)
+        self.releaseAnyButton(button)
 
     def scroll_y(self, position: int):
         """
@@ -84,13 +97,6 @@ class Mouse:
         if not -127 <= position <= 127: 
             raise RelativeMoveRangeError(f"Value of x: {position} out of range (-127 - 127)")
         self.__send_mouse_event(self.dev, self.buttons_state, 0, 0, 0, position)
-
-
-    def middle_click(self, release = True):
-        self.__send_mouse_event(self.dev, 0x4, 0, 0, 0, 0)
-        self.buttons_state = 0x4
-        if release:
-            self.release()
 
     def raw(self, buttons_state, x, y, scroll_y, scroll_x):
         """
@@ -116,10 +122,8 @@ class Mouse:
             RelativeMoveRangeError(f"Value of y: {y} out of range (0 - 65535)")
         self.__send_mouse_event(self.dev, self.buttons_state, x, y, 0, 0)
         
-        
     def __enter__(self):
         return self
-
 
     def _clean_resources(self):
         self.dev.close()    
@@ -127,7 +131,5 @@ class Mouse:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self._clean_resources()
         
-        
-    
     def close(self):
         self._clean_resources()

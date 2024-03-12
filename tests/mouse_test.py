@@ -5,7 +5,7 @@ from common import random_file
 def test_left_click():
         with open(random_file(), 'ab+') as f:
             m = Mouse(f)
-            m.left_click()
+            m.clickLeftButton()
             f.seek(0)
             data = f.read()
             f.close()
