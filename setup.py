@@ -5,8 +5,7 @@ with open('README.md', 'r') as f:
 # with open('requirements.txt', 'r') as f:
 #     requirements = f.read().splitlines()
 setup(
-    name="zero-hid",  # How you named your package folder
-    packages=['zero-hid', 'zero-hid.hid'],  # Chose the same as "name"
+    name="zero_hid",  # How you named your package folder
     include_package_data=True,
     version="v0.1",  # Start with a small number and increase it with every change you make
     license="LGPL",  # Chose a license from here: https://help.github.com/articles/licensing-a-repository

@@ -27,13 +27,8 @@ echo 0x0200 > bcdUSB    # USB2
 
 STRINGS_DIR="strings/0x409"
 mkdir -p "$STRINGS_DIR"
-
-RANDOM_SERIAL=$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 20 | head -n 1)
-echo "$RANDOM_SERIAL" > "${STRINGS_DIR}/serialnumber"
-
-RANDOM_MANUFACTURER=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 10 | head -n 1)
-echo "$RANDOM_MANUFACTURER" > "${STRINGS_DIR}/manufacturer"
-
+echo "6b65796d696d6570690" > "${STRINGS_DIR}/serialnumber"
+echo "tinypilot" > "${STRINGS_DIR}/manufacturer"
 echo "Multifunction USB Device" > "${STRINGS_DIR}/product"
 
 # Keyboard
