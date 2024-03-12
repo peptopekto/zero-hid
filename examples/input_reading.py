@@ -23,7 +23,7 @@ def getMouseEvent():
 
 
   # modify and send mouse
-  m.move(x,y)
+  m.move(x,y*-1)
 
   if bLeft == 1 and lastLeft == 0:
     m.left_press()
